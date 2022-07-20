@@ -1,0 +1,16 @@
+.wrapper {
+  padding: 12px 16px;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rightContainer {
+  display: flex;
+  align-items: center;
+}
