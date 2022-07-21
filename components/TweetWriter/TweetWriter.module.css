@@ -1,0 +1,24 @@
+.tweeterContainer {
+  display: flex;
+  align-items: flex-start;
+}
+
+.tweeterInputContainer {
+  width: 100%;
+  margin-right: 20px;
+}
+
+.tweetsContainer {
+  width: 100%;
+  max-height: 100vh;
+}
+
+.progressContainer {
+  display: flex;
+  align-items: center;
+}
+
+.actionContainer {
+  display: flex;
+  align-items: center;
+}

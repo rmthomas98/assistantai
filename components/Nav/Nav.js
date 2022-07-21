@@ -1,10 +1,17 @@
 import styles from "./Nav.module.css";
-import { User, Text, Switch, useTheme, Dropdown } from "@nextui-org/react";
+import {
+  User,
+  Text,
+  Switch,
+  useTheme,
+  Dropdown,
+  Divider,
+} from "@nextui-org/react";
 import { useSession, signOut } from "next-auth/react";
 import { BsFillSunFill, BsFillMoonStarsFill } from "react-icons/bs";
 import { useTheme as useNextTheme } from "next-themes";
 import { useEffect } from "react";
-import { BiExit } from "react-icons/bi";
+import { BiChat, BiExit } from "react-icons/bi";
 
 export const Nav = () => {
   const { data: session, status } = useSession();
@@ -25,10 +32,16 @@ export const Nav = () => {
     if (key === "log-out") signOut();
   };
 
-  if (!session) return <div></div>;
+  if (status === "loading") return <div></div>;
 
   return (
-    <div className={styles.wrapper}>
+    <div
+      className={styles.wrapper}
+      style={{
+        background: isDark ? "#00000042" : "#ffffff42",
+        borderBottom: isDark ? "1px solid #26292b" : "1px solid #ecedee",
+      }}
+    >
       <div className={styles.container}>
         <Text h3 weight="semibold" css={{ m: "$0" }}>
           AssistantAI
@@ -62,6 +75,16 @@ export const Nav = () => {
               variant="shadow"
               aria-label="dropdown actions"
             >
+              {/* <Dropdown.Item key="profile" css={{ height: "$18" }}>
+                <Text color="inherit">Signed in as</Text>
+                <Text size={14} color="inhereit">
+                  {session.user.name}
+                </Text>
+              </Dropdown.Item> */}
+
+              <Dropdown.Item key="feedback" icon={<BiChat />}>
+                Feedback
+              </Dropdown.Item>
               <Dropdown.Item key="log-out" color="error" icon={<BiExit />}>
                 Log out
               </Dropdown.Item>

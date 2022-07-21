@@ -43,7 +43,6 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
-  screenName    String?
   accounts      Account[]
   sessions      Session[]
 }

@@ -1,7 +1,11 @@
 import { getSession } from "next-auth/react";
+import { Tweeter } from "../../components/Tweeter/Tweeter";
+import { useState } from "react";
 
 const AppHome = () => {
-  return <div></div>;
+  const [tweets, setTweets] = useState(["fjdksjf", "jfkdlsfd", "jfkdslfd"]);
+
+  return <Tweeter tweets={tweets} setTweets={setTweets} />;
 };
 
 export const getServerSideProps = async (ctx) => {
