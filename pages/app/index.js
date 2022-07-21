@@ -3,7 +3,7 @@ import { Tweeter } from "../../components/Tweeter/Tweeter";
 import { useState } from "react";
 
 const AppHome = () => {
-  const [tweets, setTweets] = useState(["fjdksjf", "jfkdlsfd", "jfkdslfd"]);
+  const [tweets, setTweets] = useState([""]);
 
   return <Tweeter tweets={tweets} setTweets={setTweets} />;
 };

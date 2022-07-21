@@ -6,16 +6,52 @@ import {
   User,
   Text,
   Progress,
+  Spacer,
+  Tooltip,
+  useTheme,
 } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { TbFeather } from "react-icons/tb";
+import {
+  TbFeather,
+  TbPlus,
+  TbTrash,
+  TbRobot,
+  TbRotate360,
+  TbRotateDot,
+  TbRotateClockwise,
+  TbRotateClockwise2,
+} from "react-icons/tb";
 
 export const TweetWriter = ({ tweets, setTweets }) => {
   const { data: session, status: currentStatus } = useSession();
+  const { isDark } = useTheme();
   console.log(tweets);
 
   const [index, setIndex] = useState(0);
+
+  const handleInputValue = (e) => {
+    if (e.target.value.length >= 281) return;
+    console.log(e.key);
+    const tweetsCopy = [...tweets];
+    tweetsCopy[index] = e.target.value;
+    setTweets(tweetsCopy);
+  };
+
+  const handleAddTweet = () => {
+    const tweetsCopy = [...tweets];
+    tweetsCopy.push("");
+    setTweets(tweetsCopy);
+    setIndex(tweetsCopy.length - 1);
+  };
+
+  const handleDeleteTweet = () => {
+    if (tweets.length === 1) return;
+    const tweetsCopy = [...tweets];
+    tweetsCopy.splice(index, 1);
+    setTweets(tweetsCopy);
+    setIndex(tweetsCopy.length - 1);
+  };
 
   if (currentStatus === "loading") return <div></div>;
 
@@ -31,46 +67,131 @@ export const TweetWriter = ({ tweets, setTweets }) => {
             css={{ width: "100%" }}
             aria-label="tweet"
             value={tweets[index]}
-            onChange={(e) =>
-              e.target.value === ""
-                ? setTweets([(tweets[index] = "")])
-                : e.target.value.length >= 281
-                ? null
-                : setTweets([
-                    (tweets[index] = e.target.value),
-                    ...tweets.splice(index, 1),
-                  ])
-            }
+            onChange={(e) => handleInputValue(e)}
           />
           <div className={styles.progressContainer}>
             <Progress
               size="xs"
-              css={{ mt: "$6", ml: "$2", mb: "$8", width: "80%" }}
+              css={{ mt: "$6", ml: "$2", mb: "$8", width: "90%" }}
               shadow
               max={280}
               value={tweets[index].length}
               color={tweets[index].length > 260 ? "error" : "success"}
               status={tweets[index].length > 260 ? "error" : "success"}
             />
-            <Text span small css={{ ml: "$6" }}>
+            <Text
+              small
+              weight="semibold"
+              css={{
+                ml: "$6",
+                display: "flex",
+                justifyContent: "center",
+                position: "relative",
+                bottom: 1,
+              }}
+            >
               {tweets[index].length}
             </Text>
           </div>
           <div className={styles.actionContainer}>
-            <Button auto size="sm" shadow icon={<TbFeather />}>
-              Tweet
-            </Button>
+            <div className={styles.leftContainer}>
+              <Button
+                auto
+                size="sm"
+                color="gradient"
+                shadow
+                icon={<TbFeather />}
+              >
+                Tweet
+              </Button>
+              <Spacer x={0.4} />
+              <Tooltip
+                content="AI Completion"
+                placement="bottom"
+                color="invert"
+                offset={20}
+              >
+                <Button
+                  auto
+                  size="sm"
+                  shadow
+                  color="primary"
+                  icon={<TbRobot />}
+                />
+              </Tooltip>
+              <Spacer x={0.4} />
+              <Tooltip
+                content="AI Summarizer"
+                placement="bottom"
+                color="invert"
+                offset={20}
+              >
+                <Button
+                  auto
+                  size="sm"
+                  shadow
+                  color="primary"
+                  icon={<TbRotateClockwise2 />}
+                />
+              </Tooltip>
+            </div>
+            <div className={styles.tweeterTweetContainer}>
+              <Tooltip
+                content="Add Tweet (Thread)"
+                placement="bottom"
+                color="invert"
+                offset={20}
+              >
+                <Button
+                  icon={<TbPlus />}
+                  auto
+                  size="sm"
+                  shadow
+                  ghost
+                  onClick={handleAddTweet}
+                ></Button>
+              </Tooltip>
+              <Spacer x={0.4} />
+              <Tooltip
+                content="Delete Tweet"
+                placement="bottom"
+                color="error"
+                offset={20}
+              >
+                <Button
+                  icon={<TbTrash />}
+                  auto
+                  size="sm"
+                  color="error"
+                  shadow
+                  ghost
+                  disabled={tweets.length === 1}
+                  onClick={handleDeleteTweet}
+                ></Button>
+              </Tooltip>
+            </div>
           </div>
         </div>
+        <Spacer />
         <div className={styles.tweetsContainer}>
-          {tweets.map((tweet, index) => {
+          {tweets.map((tweet, i) => {
             return (
               <Card
-                key={index}
+                variant={
+                  i === index && isDark
+                    ? "bordered"
+                    : i === index && !isDark
+                    ? "shadow"
+                    : "flat"
+                }
+                borderWeight="normal"
+                className={styles.fadeIn}
+                key={i}
                 css={{ width: "100%", mb: "$8" }}
                 isHoverable
                 isPressable
-                onClick={() => setIndex(index)}
+                onClick={() => setIndex(i)}
+                bordered
               >
                 <Card.Header css={{ p: "$8", justifyContent: "space-between" }}>
                   <User
@@ -82,14 +203,20 @@ export const TweetWriter = ({ tweets, setTweets }) => {
                     name={session.user.name}
                   />
                   <Text span small>
-                    {tweets[index].length}
+                    {tweets[i].length}
                   </Text>
                 </Card.Header>
                 <Card.Divider />
                 <Card.Body css={{ p: "$8" }}>
-                  <Text size={12.76} weight="medium">
-                    {tweet}
-                  </Text>
+                  {tweets[i] !== ""
+                    ? tweets[i]?.split("\n").map((line, i) => {
+                        return (
+                          <Text size={12.76} weight="medium" key={i}>
+                            {line}
+                          </Text>
+                        );
+                      })
+                    : ""}
                 </Card.Body>
               </Card>
             );
