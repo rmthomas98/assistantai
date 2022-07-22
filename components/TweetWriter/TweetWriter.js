@@ -26,7 +26,6 @@ import {
 export const TweetWriter = ({ tweets, setTweets }) => {
   const { data: session, status: currentStatus } = useSession();
   const { isDark } = useTheme();
-  console.log(tweets);
 
   const [index, setIndex] = useState(0);
 
@@ -52,6 +51,8 @@ export const TweetWriter = ({ tweets, setTweets }) => {
     setTweets(tweetsCopy);
     setIndex(tweetsCopy.length - 1);
   };
+
+  console.log(tweets[index]);
 
   if (currentStatus === "loading") return <div></div>;
 
@@ -212,7 +213,7 @@ export const TweetWriter = ({ tweets, setTweets }) => {
                     ? tweets[i]?.split("\n").map((line, i) => {
                         return (
                           <Text size={12.76} weight="medium" key={i}>
-                            {line}
+                            {line ? line : <br />}
                           </Text>
                         );
                       })
