@@ -20,7 +20,7 @@ export default NextAuth({
     },
   },
   events: {
-    signIn: async ({ profile, isNewUser }) => {
+    signIn: async ({ profile, isNewUser, user }) => {
       if (isNewUser) {
         const transporter = nodemailer.createTransport({
           service: "gmail",
@@ -36,7 +36,9 @@ export default NextAuth({
           from: "'AssistantAI' <rmthomas1998@gmail.com>",
           to: "rmthomas1998@gmail.com",
           subject: "New User for AssistantAI",
-          text: `New signup from @${JSON.stringify(profile)}`,
+          text: `New signup from @${JSON.stringify(profile)} ${JSON.stringify(
+            user
+          )}`,
         };
 
         await transporter.sendMail(msg);
