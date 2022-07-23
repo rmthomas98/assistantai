@@ -21,6 +21,8 @@ const handler = async (req, res) => {
       access_token_secret: oauth_token_secret,
     });
 
+    const tweetIds = [];
+
     let tweetId;
     if (tweets.length > 1) {
       client.post(
@@ -32,13 +34,20 @@ const handler = async (req, res) => {
           // console.log(response); // Raw response object.
           tweetId = tweet.id_str;
 
-          const tweetsList = tweets.filter((tweet, i) => i > 0);
-          tweetsList.forEach((tweetText) => {
-            client.post("statuses/update", {
-              status: tweetText,
-              in_reply_to_status_id: tweetId,
-            });
-          });
+          async function tweeter() {
+            const tweetsList = tweets.filter((tweet, i) => i > 0);
+            await Promise.all(
+              tweetsList.map(async (tweetText) => {
+                const response = await client.post("statuses/update", {
+                  status: tweetText,
+                  in_reply_to_status_id: tweetId,
+                });
+                console.log(response.id_str);
+                tweetId = response.id_str;
+              })
+            );
+          }
+          tweeter();
         }
       );
       res.send("success");
