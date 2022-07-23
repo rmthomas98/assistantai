@@ -1,11 +1,19 @@
 import { getSession } from "next-auth/react";
 import { Tweeter } from "../../components/Tweeter/Tweeter";
 import { useState } from "react";
+import Head from "next/head";
 
 const AppHome = () => {
   const [tweets, setTweets] = useState([""]);
 
-  return <Tweeter tweets={tweets} setTweets={setTweets} />;
+  return (
+    <>
+      <Head>
+        <title>AssistantAI</title>
+      </Head>
+      <Tweeter tweets={tweets} setTweets={setTweets} />
+    </>
+  );
 };
 
 export const getServerSideProps = async (ctx) => {

@@ -4,6 +4,8 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { useRouter } from "next/router";
 import { SessionProvider } from "next-auth/react";
 import { Nav } from "../components/Nav/Nav";
+import Head from "next/head";
+import Script from "next/script";
 
 const globalStyles = globalCss({
   html: {
@@ -40,25 +42,44 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }) => {
   const router = useRouter();
 
   return (
-    <SessionProvider session={session}>
-      <NextThemesProvider
-        attribute="class"
-        enableSystem={false}
-        defaultTheme="light"
-        value={{ light: lightTheme.className, dark: darkTheme.className }}
-      >
-        <NextUIProvider>
-          {router.pathname.endsWith("/") ? (
-            <Component {...pageProps} />
-          ) : (
-            <>
-              <Nav />
+    <>
+      <Head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1"
+        />
+        <Script
+          id="my-script"
+          strategy="lazyOnload"
+          src={`https://www.googletagmanager.com/gtag/js?id=G-1V03N0TB1Q`}
+        ></Script>
+        <Script strategy="lazyOnload" id="my-script-2">
+          {`window.dataLayer = window.dataLayer || [];
+            function gtag() {dataLayer.push(arguments);}
+            gtag("js", new Date());
+            gtag("config", "G-1V03N0TB1Q");`}
+        </Script>
+      </Head>
+      <SessionProvider session={session}>
+        <NextThemesProvider
+          attribute="class"
+          enableSystem={false}
+          defaultTheme="light"
+          value={{ light: lightTheme.className, dark: darkTheme.className }}
+        >
+          <NextUIProvider>
+            {router.pathname.endsWith("/") ? (
               <Component {...pageProps} />
-            </>
-          )}
-        </NextUIProvider>
-      </NextThemesProvider>
-    </SessionProvider>
+            ) : (
+              <>
+                <Nav />
+                <Component {...pageProps} />
+              </>
+            )}
+          </NextUIProvider>
+        </NextThemesProvider>
+      </SessionProvider>
+    </>
   );
 };
 

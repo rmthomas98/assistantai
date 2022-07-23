@@ -1,61 +1,118 @@
+/*
+* Prefixed by https://autoprefixer.github.io
+* PostCSS: v8.4.14,
+* Autoprefixer: v10.4.7
+* Browsers: last 4 version
+*/
+
 .tweeterContainer {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
   align-items: flex-start;
 }
 
 .tweeterInputContainer {
   width: 100%;
+  padding-top: 2px;
 }
 
 .tweetsContainer {
   width: 100%;
-  max-height: 100vh;
+  max-height: calc(100vh - 97px);
+  overflow-y: auto;
+  overflow: -moz-scrollbars-none;
+  -ms-overflow-style: none;
+  padding-bottom: 100px;
+  padding-top: 2px;
+}
+
+.tweetsContainer::-webkit-scrollbar {
+  width: 0 !important;
 }
 
 .progressContainer {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
   align-items: center;
 }
 
 .actionContainer {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
   align-items: center;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
   justify-content: space-between;
 }
 
 .tweeterTweetContainer {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
 }
 
 .leftContainer {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
   align-items: center;
 }
 
 .fadeIn {
+  -webkit-animation: fadeIn 1s ease;
   animation: fadeIn 1s ease;
+}
+
+@-webkit-keyframes fadeIn {
+  from {
+    opacity: 0;
+    -webkit-transform: translateY(20px);
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    -webkit-transform: translate(0px);
+    transform: translate(0px);
+  }
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
+    -webkit-transform: translateY(20px);
     transform: translateY(20px);
   }
   to {
     opacity: 1;
+    -webkit-transform: translate(0px);
     transform: translate(0px);
   }
 }
 
 @media screen and (max-width: 700px) {
   .tweeterContainer {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
     flex-direction: column;
   }
+
   .tweeterInputContainer {
     width: 100%;
   }
   .tweetsContainer {
     width: 100%;
-    max-height: 100vh;
+    max-height: calc(100vh - 420px);
   }
 }

@@ -130,13 +130,24 @@ export const TweetWriter = ({ tweets, setTweets }) => {
       return toast.error("Please write a tweet!", { style: toastStyle });
     const filterTweets = tweets.filter((tweet) => tweet !== "");
     setFilteredTweets(filterTweets);
+    if (tweetError)
+      return toast.error("One of your tweets is too long!", {
+        style: toastStyle,
+      });
     setIsActive(true);
   };
 
   useEffect(() => {
-    tweets.forEach((tweet) => {
-      if (tweet.length > 280) return setTweetError(true);
-      setTweetError(false);
+    const tweetErrors = tweets.forEach((tweet) => {
+      if (tweet.length > 280) {
+        setTweetError(true);
+        return tweet;
+      }
+      if (!tweetErrors) {
+        setTweetError(false);
+      } else {
+        setTweetError(true);
+      }
     });
   }, [tweets]);
 
@@ -305,18 +316,12 @@ export const TweetWriter = ({ tweets, setTweets }) => {
             {tweets.map((tweet, i) => {
               return (
                 <Card
-                  variant={
-                    i === index && isDark
-                      ? "bordered"
-                      : i === index && !isDark
-                      ? "shadow"
-                      : "flat"
-                  }
+                  variant={i === index ? "bordered" : "flat"}
+                  color="primary"
                   borderWeight="normal"
                   className={styles.fadeIn}
                   key={i}
                   css={{ width: "100%", mb: "$8" }}
-                  isHoverable
                   isPressable
                   onClick={() => {
                     setIndex(i);

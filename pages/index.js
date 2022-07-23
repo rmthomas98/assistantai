@@ -16,8 +16,16 @@ const Home = () => {
   return (
     <div className={styles.wrapper}>
       <Head>
-        <title>Log in</title>
+        <title>AssistantAI</title>
       </Head>
+      <meta
+        name="description"
+        content="Write better tweets and save more time by using our AI writer."
+      />
+      <meta
+        name="keywords"
+        content="tweet, write, save time, ai, assistant, assistantai, twitter"
+      />
       <Text h1 weight="bold" className={styles.header}>
         <Text
           span
