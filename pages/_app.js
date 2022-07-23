@@ -48,18 +48,18 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }) => {
           name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1"
         />
-        <Script
-          id="my-script"
-          strategy="lazyOnload"
-          src={`https://www.googletagmanager.com/gtag/js?id=G-1V03N0TB1Q`}
-        ></Script>
-        <Script strategy="lazyOnload" id="my-script-2">
-          {`window.dataLayer = window.dataLayer || [];
+      </Head>
+      <Script
+        id="my-script"
+        strategy="lazyOnload"
+        src={`https://www.googletagmanager.com/gtag/js?id=G-1V03N0TB1Q`}
+      ></Script>
+      <Script strategy="lazyOnload" id="my-script-2">
+        {`window.dataLayer = window.dataLayer || [];
             function gtag() {dataLayer.push(arguments);}
             gtag("js", new Date());
             gtag("config", "G-1V03N0TB1Q");`}
-        </Script>
-      </Head>
+      </Script>
       <SessionProvider session={session}>
         <NextThemesProvider
           attribute="class"
