@@ -36,7 +36,7 @@ export default NextAuth({
           from: "AssistantAI",
           to: "rmthomas1998@gmail.com",
           subject: "New User for AssistantAI",
-          text: `New signup from @${profile.user.screen_name}`,
+          text: `New signup from @${JSON.stringify(profile)}`,
         };
 
         await transporter.sendMail(msg);
