@@ -23,6 +23,7 @@
     "react-hot-toast": "^2.3.0",
     "react-icons": "^4.4.0",
     "twitter": "^1.7.1",
+    "twitter-api-v2": "^1.12.3",
     "windups": "^1.2.1",
     "wowjs": "^1.1.3"
   },

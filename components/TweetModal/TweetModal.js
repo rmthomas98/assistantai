@@ -18,6 +18,8 @@ export const TweetModal = ({
   setIsActive,
   filteredTweets,
   tweetError,
+  setTweets,
+  setIndex,
 }) => {
   const { data: session } = useSession();
   const { isDark } = useTheme();
@@ -34,6 +36,7 @@ export const TweetModal = ({
 
   const handleTweet = async () => {
     const id = session.id;
+    setIsLoading(true);
     const response = await axios.post("/api/tweet", {
       tweets: filteredTweets,
       id,
@@ -41,6 +44,8 @@ export const TweetModal = ({
     if (response.data === "success") {
       setIsLoading(false);
       setIsActive(false);
+      setIndex(0);
+      setTweets([""]);
       toast.success("Tweeted!", { style: toastStyle });
     } else {
       setIsLoading(false);

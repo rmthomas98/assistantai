@@ -23,6 +23,8 @@ import {
 import axios from "axios";
 import { TweetModal } from "../TweetModal/TweetModal";
 import { useWindupString } from "windups";
+import toast from "react-hot-toast";
+import { setMaxListeners } from "events";
 
 export const TweetWriter = ({ tweets, setTweets }) => {
   const { data: session, status: currentStatus } = useSession();
@@ -38,6 +40,14 @@ export const TweetWriter = ({ tweets, setTweets }) => {
   const [summarized, setSummarized] = useState("");
   const [currSummarized] = useWindupString(summarized || "", { pace: () => 6 });
   const [tweetError, setTweetError] = useState(false);
+
+  const toastStyle = {
+    background: isDark ? "#ECEDEE" : "#16181A",
+    color: isDark ? "#16181A" : "#ECEDEE",
+    textAlign: "center",
+    fontSize: 14,
+    fontWeight: 500,
+  };
 
   const handleInputValue = (e) => {
     setCompletion("");
@@ -64,16 +74,24 @@ export const TweetWriter = ({ tweets, setTweets }) => {
   };
 
   const handleCompletion = async () => {
-    if (tweets[0].length < 1) return;
+    if (tweets[0].length < 1)
+      return toast.error("Give the AI something to work with!", {
+        style: toastStyle,
+      });
     setCompletionLoading(true);
     const response = await axios.post("/api/complete", {
       text: tweets.join(""),
     });
     const tweetsCopy = [...tweets];
-    const completedText = response.data.choices[0].text;
+    const completedText =
+      tweets[index] === ""
+        ? response.data.choices[0].text.slice(2)
+        : response.data.choices[0].text;
     if (response.data.choices[0].text) {
       setSummarized("");
       setCompletion(tweetsCopy[index] + completedText);
+    } else {
+      toast.error("Error completing tweet!", { style: toastStyle });
     }
     tweetsCopy[index] += completedText;
     setTweets(tweetsCopy);
@@ -81,7 +99,10 @@ export const TweetWriter = ({ tweets, setTweets }) => {
   };
 
   const handleSummarize = async () => {
-    if (tweets[index].length < 1) return;
+    if (tweets[index].length < 1)
+      return toast.error("Give the AI something to work with!", {
+        style: toastStyle,
+      });
     setSummarizeLoading(true);
     const response = await axios.post("/api/summarize", {
       text: tweets[index],
@@ -91,6 +112,8 @@ export const TweetWriter = ({ tweets, setTweets }) => {
     if (response.data.choices[0].text !== "") {
       setCompletion("");
       setSummarized(summarizedText);
+    } else {
+      toast.error("Error summarizing tweet!", { style: toastStyle });
     }
     tweetsCopy[index] = summarizedText;
     setTweets(tweetsCopy);
@@ -103,7 +126,8 @@ export const TweetWriter = ({ tweets, setTweets }) => {
   }, []);
 
   const handleFilteredTweets = () => {
-    if (tweets[0] === "") return;
+    if (tweets[0] === "")
+      return toast.error("Please write a tweet!", { style: toastStyle });
     const filterTweets = tweets.filter((tweet) => tweet !== "");
     setFilteredTweets(filterTweets);
     setIsActive(true);
@@ -125,6 +149,8 @@ export const TweetWriter = ({ tweets, setTweets }) => {
         isActive={isActive}
         setIsActive={setIsActive}
         tweetError={tweetError}
+        setTweets={setTweets}
+        setIndex={setIndex}
       />
       <div className={styles.container}>
         <div className={styles.tweeterContainer}>
@@ -292,7 +318,11 @@ export const TweetWriter = ({ tweets, setTweets }) => {
                   css={{ width: "100%", mb: "$8" }}
                   isHoverable
                   isPressable
-                  onClick={() => setIndex(i)}
+                  onClick={() => {
+                    setIndex(i);
+                    setSummarized("");
+                    setCompletion("");
+                  }}
                   bordered
                 >
                   <Card.Header

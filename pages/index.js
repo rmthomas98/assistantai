@@ -34,7 +34,7 @@ const Home = () => {
         css={{ mb: "$10", color: "$accents8", textAlign: "center" }}
         weight="medium"
       >
-        Become more efficient than ever when writing tweets.
+        Save more time, write better tweets.
       </Text>
       <Button
         size="md"

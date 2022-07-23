@@ -18,8 +18,6 @@ export const Nav = () => {
   const { setTheme } = useNextTheme();
   const { isDark } = useTheme();
 
-  console.log(session);
-
   useEffect(() => {
     if (isDark) {
       document.querySelector("body")?.classList.add("my-dark-app");
@@ -51,7 +49,6 @@ export const Nav = () => {
             css={{ mr: "$10" }}
             size="sm"
             shadow
-            color="secondary"
             iconOn={<BsFillMoonStarsFill />}
             iconOff={<BsFillSunFill />}
             checked={isDark}

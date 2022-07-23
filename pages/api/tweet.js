@@ -1,5 +1,4 @@
-const Twitter = require("twitter");
-import axios from "axios";
+const { TwitterApi } = require("twitter-api-v2");
 import prisma from "../../lib/prisma";
 
 const handler = async (req, res) => {
@@ -14,54 +13,21 @@ const handler = async (req, res) => {
     const account = user.accounts[0];
     const { oauth_token, oauth_token_secret } = account;
 
-    const client = new Twitter({
-      consumer_key: process.env.TWITTER_CLIENT_ID,
-      consumer_secret: process.env.TWITTER_CLIENT_SECRET,
-      access_token_key: oauth_token,
-      access_token_secret: oauth_token_secret,
+    const client = new TwitterApi({
+      appKey: process.env.TWITTER_CLIENT_ID,
+      appSecret: process.env.TWITTER_CLIENT_SECRET,
+      accessToken: oauth_token,
+      accessSecret: oauth_token_secret,
     });
 
-    const tweetIds = [];
-
-    let tweetId;
     if (tweets.length > 1) {
-      client.post(
-        "statuses/update",
-        { status: tweets[0] },
-        (error, tweet, response) => {
-          if (error) return res.status(500).send("Server Error");
-          // console.log(tweet); // Tweet body.
-          // console.log(response); // Raw response object.
-          tweetId = tweet.id_str;
-
-          async function tweeter() {
-            const tweetsList = tweets.filter((tweet, i) => i > 0);
-            await Promise.all(
-              tweetsList.map(async (tweetText) => {
-                const response = await client.post("statuses/update", {
-                  status: tweetText,
-                  in_reply_to_status_id: tweetId,
-                });
-                console.log(response.id_str);
-                tweetId = response.id_str;
-              })
-            );
-          }
-          tweeter();
-        }
-      );
+      // create a thread of tweets
+      await client.v1.tweetThread(tweets);
       res.send("success");
     } else {
       const tweet = tweets[0];
-
-      client.post(
-        "statuses/update",
-        { status: tweet },
-        (error, tweet, response) => {
-          if (error) return res.status(500).send("Server Error");
-          res.send("success");
-        }
-      );
+      await client.v1.tweet(tweet);
+      res.send("success");
     }
   } catch {
     res.status(500).send("Server Error");
