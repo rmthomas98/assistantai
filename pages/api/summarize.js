@@ -6,7 +6,7 @@ const handler = async (req, res) => {
 
     const response = await openai.createCompletion({
       model: "text-davinci-002",
-      prompt: `Summarize: ${text}`,
+      prompt: `Rewrite this text in a better way: ${text}`,
       temperature: 0.7,
       max_tokens: 60,
     });

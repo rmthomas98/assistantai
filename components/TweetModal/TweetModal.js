@@ -1,11 +1,53 @@
 import styles from "./TweetModal.module.css";
-import { Modal, Text, User, Card, useTheme } from "@nextui-org/react";
+import {
+  Modal,
+  Text,
+  User,
+  Card,
+  useTheme,
+  Button,
+  Loading,
+} from "@nextui-org/react";
 import { useSession } from "next-auth/react";
+import axios from "axios";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
-export const TweetModal = ({ isActive, setIsActive, filteredTweets }) => {
+export const TweetModal = ({
+  isActive,
+  setIsActive,
+  filteredTweets,
+  tweetError,
+}) => {
   const { data: session } = useSession();
   const { isDark } = useTheme();
-  console.log(filteredTweets);
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const toastStyle = {
+    background: isDark ? "#ECEDEE" : "#16181A",
+    color: isDark ? "#16181A" : "#ECEDEE",
+    textAlign: "center",
+    fontSize: 14,
+    fontWeight: 500,
+  };
+
+  const handleTweet = async () => {
+    const id = session.id;
+    const response = await axios.post("/api/tweet", {
+      tweets: filteredTweets,
+      id,
+    });
+    if (response.data === "success") {
+      setIsLoading(false);
+      setIsActive(false);
+      toast.success("Tweeted!", { style: toastStyle });
+    } else {
+      setIsLoading(false);
+      setIsActive(false);
+      toast.error("Error Tweeting!", { style: toastStyle });
+    }
+  };
 
   return (
     <Modal
@@ -40,6 +82,19 @@ export const TweetModal = ({ isActive, setIsActive, filteredTweets }) => {
           );
         })}
       </Modal.Body>
+      <Modal.Footer>
+        <Button color="error" flat auto onClick={() => setIsActive(false)}>
+          Cancel
+        </Button>
+        <Button
+          shadow
+          auto
+          disabled={tweetError || isLoading}
+          onClick={handleTweet}
+        >
+          {isLoading ? <Loading size="xs" /> : "Tweet now"}
+        </Button>
+      </Modal.Footer>
     </Modal>
   );
 };

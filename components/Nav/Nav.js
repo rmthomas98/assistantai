@@ -51,6 +51,7 @@ export const Nav = () => {
             css={{ mr: "$10" }}
             size="sm"
             shadow
+            color="secondary"
             iconOn={<BsFillMoonStarsFill />}
             iconOff={<BsFillSunFill />}
             checked={isDark}

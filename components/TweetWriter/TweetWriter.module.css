@@ -46,3 +46,16 @@
     transform: translate(0px);
   }
 }
+
+@media screen and (max-width: 700px) {
+  .tweeterContainer {
+    flex-direction: column;
+  }
+  .tweeterInputContainer {
+    width: 100%;
+  }
+  .tweetsContainer {
+    width: 100%;
+    max-height: 100vh;
+  }
+}

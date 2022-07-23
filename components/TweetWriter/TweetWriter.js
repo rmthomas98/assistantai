@@ -22,6 +22,7 @@ import {
 } from "react-icons/tb";
 import axios from "axios";
 import { TweetModal } from "../TweetModal/TweetModal";
+import { useWindupString } from "windups";
 
 export const TweetWriter = ({ tweets, setTweets }) => {
   const { data: session, status: currentStatus } = useSession();
@@ -32,9 +33,15 @@ export const TweetWriter = ({ tweets, setTweets }) => {
   const [summarizeLoading, setSummarizeLoading] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const [filteredTweets, setFilteredTweets] = useState(false);
+  const [completion, setCompletion] = useState("");
+  const [currCompletion] = useWindupString(completion || "", { pace: () => 6 });
+  const [summarized, setSummarized] = useState("");
+  const [currSummarized] = useWindupString(summarized || "", { pace: () => 6 });
+  const [tweetError, setTweetError] = useState(false);
 
   const handleInputValue = (e) => {
-    console.log(e.key);
+    setCompletion("");
+    setSummarized("");
     const tweetsCopy = [...tweets];
     tweetsCopy[index] = e.target.value;
     setTweets(tweetsCopy);
@@ -63,7 +70,12 @@ export const TweetWriter = ({ tweets, setTweets }) => {
       text: tweets.join(""),
     });
     const tweetsCopy = [...tweets];
-    tweetsCopy[index] += response.data.choices[0].text;
+    const completedText = response.data.choices[0].text;
+    if (response.data.choices[0].text) {
+      setSummarized("");
+      setCompletion(tweetsCopy[index] + completedText);
+    }
+    tweetsCopy[index] += completedText;
     setTweets(tweetsCopy);
     setCompletionLoading(false);
   };
@@ -75,7 +87,12 @@ export const TweetWriter = ({ tweets, setTweets }) => {
       text: tweets[index],
     });
     const tweetsCopy = [...tweets];
-    tweetsCopy[index] = response.data.choices[0].text.split("\n").join("");
+    const summarizedText = response.data.choices[0].text.slice(2);
+    if (response.data.choices[0].text !== "") {
+      setCompletion("");
+      setSummarized(summarizedText);
+    }
+    tweetsCopy[index] = summarizedText;
     setTweets(tweetsCopy);
     setSummarizeLoading(false);
   };
@@ -92,6 +109,13 @@ export const TweetWriter = ({ tweets, setTweets }) => {
     setIsActive(true);
   };
 
+  useEffect(() => {
+    tweets.forEach((tweet) => {
+      if (tweet.length > 280) return setTweetError(true);
+      setTweetError(false);
+    });
+  }, [tweets]);
+
   if (currentStatus === "loading") return <div></div>;
 
   return (
@@ -100,6 +124,7 @@ export const TweetWriter = ({ tweets, setTweets }) => {
         filteredTweets={filteredTweets}
         isActive={isActive}
         setIsActive={setIsActive}
+        tweetError={tweetError}
       />
       <div className={styles.container}>
         <div className={styles.tweeterContainer}>
@@ -111,7 +136,11 @@ export const TweetWriter = ({ tweets, setTweets }) => {
               maxRows={10}
               css={{ width: "100%" }}
               aria-label="tweet"
-              value={tweets[index]}
+              value={
+                completion || summarized
+                  ? currCompletion || currSummarized
+                  : tweets[index]
+              }
               onChange={(e) => handleInputValue(e)}
             />
             <div className={styles.progressContainer}>
@@ -208,10 +237,11 @@ export const TweetWriter = ({ tweets, setTweets }) => {
               </div>
               <div className={styles.tweeterTweetContainer}>
                 <Tooltip
-                  content="Add Tweet (Thread)"
+                  content="Add"
                   placement="bottom"
                   color="invert"
                   offset={20}
+                  css={{ textAlign: "center" }}
                 >
                   <Button
                     icon={<TbPlus />}
@@ -225,7 +255,7 @@ export const TweetWriter = ({ tweets, setTweets }) => {
                 </Tooltip>
                 <Spacer x={0.4} />
                 <Tooltip
-                  content="Delete Tweet"
+                  content="Delete"
                   placement="bottom"
                   color="error"
                   offset={20}
@@ -244,7 +274,7 @@ export const TweetWriter = ({ tweets, setTweets }) => {
               </div>
             </div>
           </div>
-          <Spacer />
+          <Spacer y={1.4} />
           <div className={styles.tweetsContainer}>
             {tweets.map((tweet, i) => {
               return (
@@ -277,13 +307,13 @@ export const TweetWriter = ({ tweets, setTweets }) => {
                       name={session.user.name}
                     />
                     <Text span small>
-                      {tweets[i].length}
+                      {tweet.length}
                     </Text>
                   </Card.Header>
                   <Card.Divider />
                   <Card.Body css={{ p: "$8" }}>
-                    {tweets[i] !== ""
-                      ? tweets[i]?.split("\n").map((line, i) => {
+                    {tweet !== ""
+                      ? tweet?.split("\n").map((line, i) => {
                           return (
                             <Text size={12.76} weight="medium" key={i}>
                               {line ? line : <br />}
