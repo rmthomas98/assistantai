@@ -33,10 +33,10 @@ export default NextAuth({
         });
 
         const msg = {
-          from: "rmthomas1998@gmail.com",
+          from: "AssistantAI",
           to: "rmthomas1998@gmail.com",
           subject: "New User for AssistantAI",
-          text: `New signup from @${profile.screen_name}`,
+          text: `New signup from @${profile.user.screen_name}`,
         };
 
         await transporter.sendMail(msg);
