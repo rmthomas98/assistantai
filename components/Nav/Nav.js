@@ -12,11 +12,13 @@ import { BsFillSunFill, BsFillMoonStarsFill } from "react-icons/bs";
 import { useTheme as useNextTheme } from "next-themes";
 import { useEffect } from "react";
 import { BiChat, BiExit } from "react-icons/bi";
+import { useWindowWidth } from "@react-hook/window-size";
 
 export const Nav = () => {
   const { data: session, status } = useSession();
   const { setTheme } = useNextTheme();
   const { isDark } = useTheme();
+  const width = useWindowWidth();
 
   useEffect(() => {
     if (isDark) {
@@ -65,7 +67,7 @@ export const Nav = () => {
                 bordered
                 pointer
                 color="gradient"
-                name={session.user.name}
+                name={width > 600 ? session.user.name : null}
               />
             </Dropdown.Trigger>
             <Dropdown.Menu
