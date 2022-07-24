@@ -6,6 +6,7 @@ import { SessionProvider } from "next-auth/react";
 import { Nav } from "../components/Nav/Nav";
 import Head from "next/head";
 import Script from "next/script";
+import { useWindowWidth } from "@react-hook/window-size";
 
 const globalStyles = globalCss({
   html: {
@@ -16,6 +17,11 @@ const globalStyles = globalCss({
   ".nextui-collapse-title": {
     fontSize: 16,
     fontWeight: "$semibold",
+  },
+  "@media screen and (max-width: 600px)": {
+    ".nextui-user-info": {
+      marginLeft: 0,
+    },
   },
 });
 
