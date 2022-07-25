@@ -15,8 +15,9 @@
 }
 
 .tweeterInputContainer {
-  width: 100%;
   padding-top: 2px;
+  animation: fadeIn 1s ease;
+  width: 100%;
 }
 
 .tweetsContainer {

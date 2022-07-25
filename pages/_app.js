@@ -6,7 +6,7 @@ import { SessionProvider } from "next-auth/react";
 import { Nav } from "../components/Nav/Nav";
 import Head from "next/head";
 import Script from "next/script";
-import { useWindowWidth } from "@react-hook/window-size";
+import { Toaster } from "react-hot-toast";
 
 const globalStyles = globalCss({
   html: {
@@ -17,11 +17,6 @@ const globalStyles = globalCss({
   ".nextui-collapse-title": {
     fontSize: 16,
     fontWeight: "$semibold",
-  },
-  "@media screen and (max-width: 600px)": {
-    ".nextui-user-info": {
-      marginLeft: 0,
-    },
   },
 });
 
@@ -78,8 +73,13 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }) => {
               <Component {...pageProps} />
             ) : (
               <>
+                <Toaster />
                 <Nav />
-                <Component {...pageProps} />
+                <div className="app-wrapper">
+                  <div className="app-container">
+                    <Component {...pageProps} />
+                  </div>
+                </div>
               </>
             )}
           </NextUIProvider>

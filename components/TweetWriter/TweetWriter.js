@@ -24,7 +24,6 @@ import axios from "axios";
 import { TweetModal } from "../TweetModal/TweetModal";
 import { useWindupString } from "windups";
 import toast from "react-hot-toast";
-import { setMaxListeners } from "events";
 
 export const TweetWriter = ({ tweets, setTweets }) => {
   const { data: session, status: currentStatus } = useSession();
@@ -61,6 +60,8 @@ export const TweetWriter = ({ tweets, setTweets }) => {
     if (tweets[index] === "") return;
     const tweetsCopy = [...tweets];
     tweetsCopy.push("");
+    setCompletion("");
+    setSummarized("");
     setTweets(tweetsCopy);
     setIndex(tweetsCopy.length - 1);
   };
