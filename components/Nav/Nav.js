@@ -10,6 +10,7 @@ import {
   Button,
   Loading,
   Avatar,
+  Switch,
 } from "@nextui-org/react";
 import { useSession, signOut } from "next-auth/react";
 import { BsFillSunFill, BsFillMoonStarsFill } from "react-icons/bs";
@@ -156,34 +157,13 @@ export const Nav = () => {
             </a>
           </Link>
           <div className={styles.rightContainer}>
-            <Dropdown placement="bottom-right">
-              <Dropdown.Button auto flat css={{ tt: "capitalize" }}>
-                {selectedKey}
-              </Dropdown.Button>
-              <Dropdown.Menu
-                selectionMode="single"
-                aria-label="nav-dropdown"
-                variant="shadow"
-                selectedKeys={[selectedKey]}
-                onAction={handleDropdownNav}
-                color="primary"
-              >
-                <Dropdown.Item
-                  key="tweet"
-                  icon={<TbFeather size={16} />}
-                  css={{ fontSize: 14, fontWeight: "$medium" }}
-                >
-                  Tweet
-                </Dropdown.Item>
-                <Dropdown.Item
-                  key="engage"
-                  icon={<TbUsers size={16} />}
-                  css={{ fontSize: 14, fontWeight: "$medium" }}
-                >
-                  Engage
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
+            <Switch
+              iconOn={<BsFillMoonStarsFill />}
+              iconOff={<BsFillSunFill />}
+              shadow
+              checked={isDark}
+              onChange={() => setTheme(isDark ? "light" : "dark")}
+            />
             <Spacer />
             <Dropdown placement="bottom-right">
               <Dropdown.Trigger>

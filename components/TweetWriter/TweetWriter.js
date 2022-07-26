@@ -1,7 +1,6 @@
 import styles from "./TweetWriter.module.css";
 import {
   Textarea,
-  Button,
   Card,
   User,
   Text,
@@ -10,6 +9,7 @@ import {
   Tooltip,
   useTheme,
   Loading,
+  Button,
 } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -243,7 +243,10 @@ export const TweetWriter = ({ tweets, setTweets }) => {
                     color="primary"
                     icon={completionLoading ? null : <TbRobot />}
                     disabled={completionLoading}
-                    css={{ maxWidth: "32px !important", width: 32 }}
+                    css={{
+                      maxWidth: "32px !important",
+                      width: 32,
+                    }}
                     onClick={handleCompletion}
                   >
                     {completionLoading ? (
